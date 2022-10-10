@@ -19,8 +19,6 @@ $querystring = http_build_query($parameters);
 // Call the TourCMS API method to search for Tours/Hotels
 $result = $tc->search_tours($querystring, $channel_id);
 
-print_r($result->tour);
-
 ?>
 
 <!DOCTYPE html>
