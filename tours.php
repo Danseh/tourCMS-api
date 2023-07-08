@@ -1,4 +1,27 @@
+<?php
 
+require_once 'vendor/autoload.php';
+
+include_once 'config/config.php';
+
+// Pagination
+$per_page = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+// Set a querystring for the search
+$parameters = array(
+					"per_page" => $per_page,
+					"page" => $page,
+					);
+
+$querystring = http_build_query($parameters);
+
+// Call the TourCMS API method to search for Tours/Hotels
+$result = $tc->search_tours($querystring, $channel_id);
+
+
+
+?>
 
 <!DOCTYPE html>
 <html lang="en-GB">
@@ -76,6 +99,23 @@ img.emoji {
 			<div class="products-title">
 				<p>Day tours</p>
 			</div>
+
+<?php 
+
+	if ($result->error=="OK")
+	{
+		// Calculate how many pages we have
+		$pages = ceil ($result->total_tour_count / $per_page);
+
+		?>
+		<p>Page <strong><?php print $page; ?></strong> of <strong><?php print $pages; ?></strong></p>
+
+		<?php 
+
+		foreach ($result->tour as $tour) :
+
+		?>
+
 <div class="row">
 
 <!--- Desktop version of tour HTML, shown automatically at desktop resolutions -->
@@ -88,25 +128,56 @@ img.emoji {
 <div id="c-49-d" class="carousel slide" data-interval="false">
 	<div class="carousel-inner">
 				<div class="carousel-item active">
-			<img class="d-block w-100" src="https://cdn.tourcms.com/a/14718/1/1/default.jpg" alt="">
+			<img class="d-block w-100" src="
+
+				<?php print $tour->thumbnail_image; ?>"
+
+			alt="">
 		</div>
 			</div>
 	</div>
             </div>
-            <a href="https://wordpress.tourcms.com/tours/day-tour-example-1-departure-a-day-inline-booking/"><span class="dummy"></span><span class="dummy-upper-right"></span></a>
+            <a href="
+				<?php print $tour->tour_url; ?>">
+			<span class="dummy"></span><span class="dummy-upper-right"></span></a>
             	<div class="card-body">
                 	<div class="left">
-                  		<span class="tourcms-badge-tourtype-horizontal"><a href="https://wordpress.tourcms.com/tours-by-type/day-tours/" rel="tag">Day tours</a></span><span class="tourcms-badge-location-horizontal"> <a href="https://wordpress.tourcms.com/tours-by-location/berlin/" rel="tag">Berlin</a></span>
+                  	<span class="tourcms-badge-tourtype-horizontal">
+						<a href="https://wordpress.tourcms.com/tours-by-type/day-tours/" rel="tag">Day tours</a>
+					</span>
+					<span class="tourcms-badge-location-horizontal"> 
+						<a href="https://wordpress.tourcms.com/tours-by-location/
+
+							<?php print $tour->location;?>/" rel="tag"><?php print $tour->location;?>
+
+						</a>
+					</span>
                 	</div>
 									<div class="right price-panel">
 										<p class="tourcms-card-text price-label" style="">Book now</p>
-                    <p class="tourcms-card-text price"><span class='fromprice'>from &#8364;20</span></p>
+                    <p class="tourcms-card-text price"><span class='fromprice'>from &#8364;
+
+						<?php print $tour->from_price; ?></span>
+						
+					</p>
 									</div>
 
 									<div class="card-meta-right">
-               			<h5 class="tourcms-card-title">Day Tour Example (1 Departure a day) Inline booking</h5>
-                		<p class="tourcms-card-text tourcms_wp_summary">This product description is for showcase purposes only, like "This tour will show you the highlights of Berlin and explain its rich history"</p>
-                		<p class="tourcms-card-text"> <b>Duration:</b> 4 hours</p>
+               			<h5 class="tourcms-card-title">
+
+							<?php print $tour->tour_name; ?>
+
+						</h5>
+                		<p class="tourcms-card-text tourcms_wp_summary">
+
+							<?php print $tour->summary; ?>
+
+						</p>
+                		<p class="tourcms-card-text"> <b>Duration:</b>
+
+							<?php print $tour->duration_desc; ?>
+
+						</p>
 
                 	</div>
         			</div>
@@ -123,19 +194,61 @@ img.emoji {
 <div id="c-49-m" class="carousel slide" data-interval="false">
 	<div class="carousel-inner">
 				<div class="carousel-item active">
-			<img class="d-block w-100" src="https://cdn.tourcms.com/a/14718/1/1/default.jpg" alt="">
+			<img class="d-block w-100" src="
+
+			<?php print $tour->thumbnail_image; ?>" 
+
+			alt="">
 		</div>
 			</div>
 	</div>
             <div class="card-body">
-              <h5 class="card-title">Day Tour Example (1 Departure a day) Inline booking</h5>
-              <div style="margin-top:-0.8rem;"><span class="badge badge-location"> <a href="https://wordpress.tourcms.com/tours-by-location/berlin/" rel="tag">Berlin</a></span><span class="badge badge-tourtype"><a href="https://wordpress.tourcms.com/tours-by-type/day-tours/" rel="tag">Day tours</a></span></div>
+              <h5 class="card-title">
+
+				<?php print $tour->tour_name; ?>
+
+			  </h5>
+              <div style="margin-top:-0.8rem;">
+			  	<span class="badge badge-location"> 
+				  <a href="https://wordpress.tourcms.com/tours-by-location/
+
+				  	<?php print $tour->location;?>/" rel="tag"><?php print $tour->location;?>
+
+				  </a>
+				</span>
+				<span class="badge badge-tourtype">
+					<a href="https://wordpress.tourcms.com/tours-by-type/day-tours/" rel="tag">Day tours</a>
+				</span>
+			</div>
 <!--              <p class="card-text"><i class="fas fa-history" style=""></i> <b>Duration:</b> 4 hours</p>-->
-              <p class="tourcms-card-text">This product description is for showcase purposes only, like "This tour will show you the highlights of Berlin and explain its rich history"</p>
+              <p class="tourcms-card-text">
+
+				<?php print $tour->summary; ?>
+
+			  </p>
             </div>
             <div class="card-footer bg-transparent">
-              <p class="tourcms-card-text tour-mobile-footer-left"> <b>Duration:</b> 4 hours<br></p>
-              <p class="tourcms-card-text tour-mobile-footer-right" style=""><a href="https://wordpress.tourcms.com/tours/day-tour-example-1-departure-a-day-inline-booking/">Book now <span class='fromprice'>from &#8364;20</span></a><br></p>
+              <p class="tourcms-card-text tour-mobile-footer-left"> <b>Duration:</b> 
+
+			  	<?php print $tour->duration_desc; ?>
+
+			  <br>
+
+			  </p>
+              <p class="tourcms-card-text tour-mobile-footer-right" style="">
+			  <a href="<?php print $tour->tour_url; ?>">
+
+			  Book now <span class='fromprice'>from &#8364;
+				
+				<?php print $tour->from_price; ?>
+
+			  	</span>
+
+			  	</a>
+
+			  	<br>
+
+			  	</p>
             </div>
           </div>
 </div>
@@ -143,7 +256,38 @@ img.emoji {
 
 
 </div>
+<p class="pagination">
 
+		<?php
+
+			endforeach;
+			// Basic pagination
+			if($page > 1)
+			{
+				// First
+				print '<a href="?page=1">&lt;&lt; First page</a>';
+				// Previous
+				print '<a href="?page=' . ($page - 1) . '">&lt; Previous page</a>';
+			}
+			if($page < $pages)
+			{
+				// Next
+				print '<a href="?page=' . ($page + 1) . '">Next page &gt;</a>';
+				// Last
+				print '<a href="?page=' . $pages . '">Last page &gt;&gt;</a>';
+			}
+
+
+			?>
+				</p>
+			<?php
+
+		} else {
+			// If not output the error
+			print "There has been an error: ";
+			print $result->error;
+		}
+		?>
 
 <style>
 @media (max-width: 768px) {
