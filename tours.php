@@ -12,6 +12,8 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $parameters = array(
 					"per_page" => $per_page,
 					"page" => $page,
+					"product_type" => 4,
+					"country" => "ES",
 					);
 
 $querystring = http_build_query($parameters);
