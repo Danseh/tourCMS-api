@@ -1,4 +1,6 @@
 <?php
+	require_once 'vendor/autoload.php';
+	use TourCMS\Utils\TourCMS as TourCMS;
 
 	// Marketplace account ID
 	// Leave this as zero if you are a supplier (i.e. not a Marketplace partner)
@@ -20,8 +22,6 @@
 
 	// Include the TourCMS library
 	// Update this to point to the tourcms.php on your server
-	include $_SERVER['DOCUMENT_ROOT'] . '/api-demo/vendor/tourcms/tourcms-php/src/TourCMS.php';
 
-	use TourCMS\Utils\TourCMS as TourCMS;
-
+	
 	$tc = new TourCMS($marketplace_account_id, $api_private_key, "simplexml", $timeout);
